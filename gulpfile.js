@@ -1,7 +1,7 @@
 'use strict';
 
-var gulp = require('gulp'),
-    sass = require('gulp-sass'),
+const gulp = require('gulp'),
+    sass = require('gulp-sass')(require('sass')),
     browserSync = require('browser-sync'),
     del = require('del'),
     imagemin = require('gulp-imagemin'),
@@ -16,11 +16,11 @@ var gulp = require('gulp'),
 gulp.task('sass', function () {
     return gulp.src('./css/*.scss')
         .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest('.//css'));
+        .pipe(gulp.dest('./css'));
 });
 
 gulp.task('sass:watch', function () {
-    gulp.watch('./css/*.scss', ['sass']);
+    gulp.watch('./css/*.scss', gulp.series('sass'));
 });
 
 gulp.task('browser-sync', function () {
@@ -40,9 +40,7 @@ gulp.task('browser-sync', function () {
 });
 
 // Default task
-gulp.task('default', gulp.series('browser-sync', function () {
-    gulp.start('sass:watch');
-}));
+gulp.task('default', gulp.parallel('browser-sync', 'sass:watch'));
 
 
 // Clean
